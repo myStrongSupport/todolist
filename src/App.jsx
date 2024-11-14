@@ -1,20 +1,26 @@
 import { useState } from "react";
 import Header from "./components/Header.jsx";
 import TodoList from "./components/TodoList/TodoList";
+import TabButton from "./components/Button/TabButton.jsx";
 
 function App() {
+  // States
+  const [enteredTask, setEnteredTasks] = useState("");
+  const [filterBtn, setFilterBtn] = useState("all");
+  const [search, setSearch] = useState("");
   const [tasks, setTasks] = useState([
     { id: "1", text: "Get Work", completed: false },
     { id: "2", text: "Get Home", completed: false },
     { id: "3", text: "Get Car", completed: false },
   ]);
 
-  const [enteredTask, setEnteredTasks] = useState("");
+  // ChangeHandler
 
   const changeEnteredTaskHandler = (event) => {
     setEnteredTasks(event.target.value);
   };
 
+  // Functions
   const handleCheckedTask = (id) => {
     setTasks((prevState) =>
       prevState.map((task) =>
@@ -40,9 +46,33 @@ function App() {
     setTasks((prevState) => prevState.filter((task) => task.id !== id));
   };
 
+  const handleSelectFilter = (selectedButton) => {
+    setFilterBtn(selectedButton);
+  };
+
+  const handleSearchTasks = (event) => {
+    setSearch(event.target.value);
+    if (filterBtn !== "all") {
+      setFilterBtn("all");
+    }
+  };
+
+  const filteredTasks = tasks.filter((task) => {
+    if (filterBtn === "completed") return task.completed;
+    if (filterBtn === "incomplete") return !task.completed;
+
+    return task.text.trim().toLowerCase().includes(search.trim());
+  });
+
   return (
     <>
       <Header />
+
+      {/* Search Bar Handler  */}
+      <div>
+        <input type="text" onChange={handleSearchTasks} />
+      </div>
+
       <form onSubmit={handleAddTask}>
         <div className="border border-gray-500 w-60 flex">
           <input
@@ -57,8 +87,19 @@ function App() {
           </button>
         </div>
       </form>
+
+      {/* Search by Button */}
+      <menu className="flex">
+        <TabButton onSelect={() => handleSelectFilter("all")}>All</TabButton>
+        <TabButton onSelect={() => handleSelectFilter("completed")}>
+          Completed
+        </TabButton>
+        <TabButton onSelect={() => handleSelectFilter("incomplete")}>
+          incomplete
+        </TabButton>
+      </menu>
       <TodoList
-        tasks={tasks}
+        tasks={filteredTasks}
         onChecked={handleCheckedTask}
         onDelete={handleDeleteTask}
       />
