@@ -1,16 +1,17 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "./components/Header.jsx";
 import TodoList from "./components/TodoList/TodoList";
 import TabButton from "./components/Button/TabButton.jsx";
 
-const STORAGE_TASKS = JSON.parse(localStorage.getItem("tasks")) || [];
+// const STORAGE_TASKS = JSON.parse(localStorage.getItem("tasks")) || [];
 
 function App() {
   // States
   const [enteredTask, setEnteredTasks] = useState("");
+  const [tasks, setTasks] = useState([]);
   const [filterBtn, setFilterBtn] = useState("all");
   const [search, setSearch] = useState("");
-  const [tasks, setTasks] = useState([...STORAGE_TASKS]);
+  const [error, setError] = useState(null);
 
   // ChangeHandler
 
@@ -38,8 +39,12 @@ function App() {
     );
   };
 
-  const handleAddTask = (event) => {
+  const onSubmitToAddTask = (event) => {
     event.preventDefault();
+
+    if (enteredTask.trim() === "") {
+      return;
+    }
 
     const newTask = {
       id: (Math.random() * 1000).toFixed(2).toString(),
@@ -87,11 +92,18 @@ function App() {
   // useEFfect
 
   // This is not best practice for using  useEffect  for getting tasks, cause we get tasks synchronously
-  // useEffect(() => {
-  //   const STORAGE_TASKS = JSON.parse(localStorage.getItem("tasks")) || [];
+  useEffect(() => {
+    const getTasksFromLocalStorage = () => {
+      const STORAGE_TASKS = JSON.parse(localStorage.getItem("tasks"));
 
-  //   setTasks(STORAGE_TASKS);
-  // }, []);
+      if (!STORAGE_TASKS) {
+        setError("Sth Went Wrong , Couldn't get tasks from local storage");
+      } else {
+        setTasks(STORAGE_TASKS);
+      }
+    };
+    getTasksFromLocalStorage();
+  }, []);
 
   return (
     <>
@@ -102,7 +114,7 @@ function App() {
         <input type="text" onChange={handleSearchTasks} />
       </div>
 
-      <form onSubmit={handleAddTask}>
+      <form onSubmit={onSubmitToAddTask}>
         <div className="border border-gray-500 w-60 flex">
           <input
             type="text"
@@ -127,6 +139,7 @@ function App() {
           incomplete
         </TabButton>
       </menu>
+      {error && <p className="text-red-500">{error}</p>}
       <TodoList
         tasks={filteredTasks}
         onChecked={handleCheckedTask}
