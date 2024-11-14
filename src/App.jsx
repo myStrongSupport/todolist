@@ -1,18 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "./components/Header.jsx";
 import TodoList from "./components/TodoList/TodoList";
 import TabButton from "./components/Button/TabButton.jsx";
+
+const STORAGE_TASKS = JSON.parse(localStorage.getItem("tasks")) || [];
 
 function App() {
   // States
   const [enteredTask, setEnteredTasks] = useState("");
   const [filterBtn, setFilterBtn] = useState("all");
   const [search, setSearch] = useState("");
-  const [tasks, setTasks] = useState([
-    { id: "1", text: "Get Work", completed: false },
-    { id: "2", text: "Get Home", completed: false },
-    { id: "3", text: "Get Car", completed: false },
-  ]);
+  const [tasks, setTasks] = useState([...STORAGE_TASKS]);
 
   // ChangeHandler
 
@@ -27,6 +25,17 @@ function App() {
         task.id === id ? { ...task, completed: !task.completed } : task
       )
     );
+
+    const storedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+    localStorage.setItem(
+      "tasks",
+      JSON.stringify(
+        storedTasks.map((task) =>
+          task.id === id ? { ...task, completed: !task.completed } : task
+        )
+      )
+    );
   };
 
   const handleAddTask = (event) => {
@@ -39,11 +48,22 @@ function App() {
     };
 
     setTasks((prevState) => [...prevState, newTask]);
+
+    const storedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+    localStorage.setItem("tasks", JSON.stringify([newTask, ...storedTasks]));
+
     setEnteredTasks("");
   };
 
   const handleDeleteTask = (id) => {
     setTasks((prevState) => prevState.filter((task) => task.id !== id));
+
+    const storedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    localStorage.setItem(
+      "tasks",
+      JSON.stringify(storedTasks.filter((task) => task.id !== id))
+    );
   };
 
   const handleSelectFilter = (selectedButton) => {
@@ -63,6 +83,15 @@ function App() {
 
     return task.text.trim().toLowerCase().includes(search.trim());
   });
+
+  // useEFfect
+
+  // This is not best practice for using  useEffect  for getting tasks, cause we get tasks synchronously
+  // useEffect(() => {
+  //   const STORAGE_TASKS = JSON.parse(localStorage.getItem("tasks")) || [];
+
+  //   setTasks(STORAGE_TASKS);
+  // }, []);
 
   return (
     <>
