@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import Header from "./components/Header.jsx";
 import TodoList from "./components/TodoList/TodoList";
-import TabButton from "./components/Button/TabButton.jsx";
+import SearchBox from "./components/Search/SearchList.jsx";
+import { IoAddOutline } from "react-icons/io5";
 
 // const STORAGE_TASKS = JSON.parse(localStorage.getItem("tasks")) || [];
 
@@ -23,8 +24,8 @@ function App() {
   const handleCheckedTask = (id) => {
     setTasks((prevState) =>
       prevState.map((task) =>
-        task.id === id ? { ...task, completed: !task.completed } : task
-      )
+        task.id === id ? { ...task, completed: !task.completed } : task,
+      ),
     );
 
     const storedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
@@ -33,9 +34,9 @@ function App() {
       "tasks",
       JSON.stringify(
         storedTasks.map((task) =>
-          task.id === id ? { ...task, completed: !task.completed } : task
-        )
-      )
+          task.id === id ? { ...task, completed: !task.completed } : task,
+        ),
+      ),
     );
   };
 
@@ -67,7 +68,7 @@ function App() {
     const storedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
     localStorage.setItem(
       "tasks",
-      JSON.stringify(storedTasks.filter((task) => task.id !== id))
+      JSON.stringify(storedTasks.filter((task) => task.id !== id)),
     );
   };
 
@@ -106,46 +107,45 @@ function App() {
   }, []);
 
   return (
-    <>
-      <Header />
+    <main>
+      <section className="h-screen">
+        <div className="mx-auto flex h-full max-w-[1400px] px-10">
+          <Header />
 
-      {/* Search Bar Handler  */}
-      <div>
-        <input type="text" onChange={handleSearchTasks} />
-      </div>
+          <div className="flex-1 py-10">
+            <SearchBox
+              onSearchTasks={handleSearchTasks}
+              onSelectFilter={handleSelectFilter}
+            />
 
-      <form onSubmit={onSubmitToAddTask}>
-        <div className="border border-gray-500 w-60 flex">
-          <input
-            type="text"
-            className="border"
-            placeholder="add task"
-            onChange={changeEnteredTaskHandler}
-            value={enteredTask}
-          />
-          <button className="px-3 py-1 bg-blue-600 rounded-md text-white ">
-            Add
-          </button>
+            <form onSubmit={onSubmitToAddTask} className="my-7">
+              <div className="bg-red- flex w-full border-b-2 border-blue-600 md:w-1/2">
+                <input
+                  type="text"
+                  className="w-[80%] px-3 py-4 outline-none"
+                  placeholder="Write your plan here"
+                  onChange={changeEnteredTaskHandler}
+                  value={enteredTask}
+                />
+                <button className="flex w-[20%] items-center text-blue-600">
+                  <IoAddOutline size={25} />
+                  <span className="ml-3"> Add Task</span>
+                </button>
+              </div>
+            </form>
+
+            {/* Search by Button */}
+
+            {error && <p className="text-red-500">{error}</p>}
+            <TodoList
+              tasks={filteredTasks}
+              onChecked={handleCheckedTask}
+              onDelete={handleDeleteTask}
+            />
+          </div>
         </div>
-      </form>
-
-      {/* Search by Button */}
-      <menu className="flex">
-        <TabButton onSelect={() => handleSelectFilter("all")}>All</TabButton>
-        <TabButton onSelect={() => handleSelectFilter("completed")}>
-          Completed
-        </TabButton>
-        <TabButton onSelect={() => handleSelectFilter("incomplete")}>
-          incomplete
-        </TabButton>
-      </menu>
-      {error && <p className="text-red-500">{error}</p>}
-      <TodoList
-        tasks={filteredTasks}
-        onChecked={handleCheckedTask}
-        onDelete={handleDeleteTask}
-      />
-    </>
+      </section>
+    </main>
   );
 }
 

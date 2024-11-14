@@ -4,8 +4,8 @@ const TodoList = ({ tasks, onChecked, onDelete }) => {
   return (
     <section>
       <div className="container">
-        <h2>List of tasks</h2>
-        <ul>
+        <h2 className="my-10 text-5xl">Tasks</h2>
+        <ul className="flex flex-wrap gap-5">
           {tasks.map((todo, index) => (
             <TodoItem
               key={index}
