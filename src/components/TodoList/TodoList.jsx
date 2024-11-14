@@ -1,6 +1,6 @@
 import TodoItem from "./TodoItem";
 
-const TodoList = ({ tasks, onChecked }) => {
+const TodoList = ({ tasks, onChecked, onDelete }) => {
   return (
     <section>
       <div className="container">
@@ -13,6 +13,7 @@ const TodoList = ({ tasks, onChecked }) => {
               text={todo.text}
               completed={todo.completed}
               onChecked={onChecked}
+              onDelete={onDelete}
             />
           ))}
         </ul>
