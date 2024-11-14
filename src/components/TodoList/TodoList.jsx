@@ -1,12 +1,12 @@
 import TodoItem from "./TodoItem";
 
-const TodoList = () => {
+const TodoList = ({ tasks }) => {
   return (
     <section>
       <div className="container">
-        <h1>List of tasks</h1>
+        <h2>List of tasks</h2>
         <ul>
-          {[1, 2, 3].map((todo, index) => (
+          {tasks.map((todo, index) => (
             <TodoItem key={index} />
           ))}
         </ul>
