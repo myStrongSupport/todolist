@@ -99,7 +99,11 @@ function App() {
     };
 
     const updatedTasks = [...tasksState.tasks, newTask];
-    setTasksState((prevState) => ({ ...prevState, tasks: updatedTasks }));
+    setTasksState((prevState) => ({
+      ...prevState,
+      tasks: updatedTasks,
+      enteredTask: "",
+    }));
     saveToLocalStorage(updatedTasks);
   };
 
@@ -108,7 +112,7 @@ function App() {
   useEffect(() => {
     const tasks = getFromLocalStorage();
 
-    if (tasks) {
+    if (!tasks) {
       setError("Sth Went Wrong , Couldn't get tasks from local storage");
     } else {
       setTasksState((prevState) => ({ ...prevState, tasks: tasks }));
