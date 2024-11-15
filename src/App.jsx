@@ -29,7 +29,7 @@ function App() {
   const changeEnteredTaskHandler = (event) => {
     setTasksState((prevState) => ({
       ...prevState,
-      enteredTask: event.targe.value,
+      enteredTask: event.target.value,
     }));
   };
 
