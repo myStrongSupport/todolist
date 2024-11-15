@@ -22,13 +22,9 @@ function App() {
     search: "",
   });
 
-  // const [enteredTask, setEnteredTasks] = useState("");
-  // const [tasks, setTasks] = useState([]);
-  // const [filterBtn, setFilterBtn] = useState("all");
-  // const [search, setSearch] = useState("");
   const [error, setError] = useState(null);
 
-  // ChangeHandler
+  // Change Handler
 
   const changeEnteredTaskHandler = (event) => {
     setTasksState((prevState) => ({
@@ -52,79 +48,76 @@ function App() {
   };
 
   const handleDeleteTask = (id) => {
-    setTasks((prevState) => prevState.filter((task) => task.id !== id));
+    const updatedTasks = tasksState.tasks.filter((task) => task.id !== id);
 
-    const storedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    localStorage.setItem(
-      "tasks",
-      JSON.stringify(storedTasks.filter((task) => task.id !== id)),
-    );
+    setTasksState((prevState) => ({
+      ...prevState,
+      tasks: updatedTasks,
+    }));
+
+    saveToLocalStorage(updatedTasks);
   };
 
   const handleSelectFilter = (selectedButton) => {
-    setFilterBtn(selectedButton);
+    setTasksState((prevState) => ({
+      ...prevState,
+      filteredBtn: selectedButton,
+    }));
   };
 
   const handleSearchTasks = (event) => {
-    setSearch(event.target.value);
-    if (filterBtn !== "all") {
-      setFilterBtn("all");
-    }
+    setTasksState((prevState) => ({
+      ...prevState,
+      search: event.target.value,
+      filteredBtn: "all",
+    }));
   };
 
-  const filteredTasks = tasks.filter((task) => {
-    if (filterBtn === "completed") return task.completed;
-    if (filterBtn === "incomplete") return !task.completed;
+  const filteredTasks = tasksState.tasks.filter((task) => {
+    if (tasksState.filteredBtn === "completed") return task.completed;
+    if (tasksState.filteredBtn === "incomplete") return !task.completed;
 
-    return task.text.trim().toLowerCase().includes(search.trim());
+    return task.text.trim().toLowerCase().includes(tasksState.search.trim());
   });
 
-  const onSubmitToAddTask = (event) => {
+  const handleAddTask = (event) => {
     event.preventDefault();
 
     // Check for any Error
-    if (enteredTask.trim() === "") {
+    if (tasksState.enteredTask.trim() === "") {
+      setError("Input should not be empty");
       return;
     }
     if (error) {
       setError(null);
     }
 
-    // Add Task To List
     const newTask = {
       id: (Math.random() * 1000).toFixed(2).toString(),
-      text: enteredTask,
+      text: tasksState.enteredTask,
       completed: false,
     };
-    setTasks((prevState) => [...prevState, newTask]);
 
-    // Add task to local storage
-    const storedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    localStorage.setItem("tasks", JSON.stringify([newTask, ...storedTasks]));
-
-    setEnteredTasks("");
+    const updatedTasks = [...tasksState.tasks, newTask];
+    setTasksState((prevState) => ({ ...prevState, tasks: updatedTasks }));
+    saveToLocalStorage(updatedTasks);
   };
 
   // useEFfect
-
   // This is not best practice for using  useEffect  for getting tasks, cause we get tasks synchronously
   useEffect(() => {
-    const getTasksFromLocalStorage = () => {
-      const STORAGE_TASKS = JSON.parse(localStorage.getItem("tasks"));
+    const tasks = getFromLocalStorage();
 
-      if (!STORAGE_TASKS) {
-        setError("Sth Went Wrong , Couldn't get tasks from local storage");
-      } else {
-        setTasks(STORAGE_TASKS);
-      }
-    };
-    getTasksFromLocalStorage();
+    if (tasks) {
+      setError("Sth Went Wrong , Couldn't get tasks from local storage");
+    } else {
+      setTasksState((prevState) => ({ ...prevState, tasks: tasks }));
+    }
   }, []);
 
   return (
-    <main>
+    <>
       <section className="h-screen">
-        {/* Container */}
         <div className="mx-auto flex h-full max-w-[1400px] px-10">
           <Header />
 
@@ -135,14 +128,14 @@ function App() {
             />
 
             {/* Form Add Task */}
-            <form onSubmit={onSubmitToAddTask} className="my-7">
+            <form onSubmit={handleAddTask} className="my-7">
               <div className="bg-red- flex w-full border-b-2 border-blue-600 md:w-1/2">
                 <input
                   type="text"
                   className="w-[80%] px-3 py-4 outline-none"
                   placeholder="Write your plan here"
                   onChange={changeEnteredTaskHandler}
-                  value={enteredTask}
+                  value={tasksState.enteredTask}
                 />
                 <button className="flex w-[20%] items-center text-blue-600">
                   <IoAddOutline size={25} />
@@ -162,7 +155,7 @@ function App() {
           </div>
         </div>
       </section>
-    </main>
+    </>
   );
 }
 
