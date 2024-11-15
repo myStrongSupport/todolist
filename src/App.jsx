@@ -46,7 +46,9 @@ function App() {
     if (enteredTask.trim() === "") {
       return;
     }
-
+    if (error) {
+      setError(null);
+    }
     const newTask = {
       id: (Math.random() * 1000).toFixed(2).toString(),
       text: enteredTask,
@@ -109,6 +111,7 @@ function App() {
   return (
     <main>
       <section className="h-screen">
+        {/* Container */}
         <div className="mx-auto flex h-full max-w-[1400px] px-10">
           <Header />
 
@@ -118,6 +121,7 @@ function App() {
               onSelectFilter={handleSelectFilter}
             />
 
+            {/* Form Add Task */}
             <form onSubmit={onSubmitToAddTask} className="my-7">
               <div className="bg-red- flex w-full border-b-2 border-blue-600 md:w-1/2">
                 <input
@@ -134,9 +138,9 @@ function App() {
               </div>
             </form>
 
-            {/* Search by Button */}
-
             {error && <p className="text-red-500">{error}</p>}
+
+            {/* List Tasks */}
             <TodoList
               tasks={filteredTasks}
               onChecked={handleCheckedTask}

@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -12,4 +13,17 @@
   -webkit-text-orientation: mixed;
   text-orientation: mixed;
   transform: rotate(180deg);
+}
+
+.custom-checkbox .checkmark {
+  background-image: url("https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/White_check.svg/200px-White_check.svg.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 1250%;
+  transition: background-size 0.2s ease;
+}
+
+.custom-checkbox input:checked + .checkmark {
+  background-size: 60%;
+  transition: background-size 0.25s cubic-bezier(0.7, 0, 0.18, 1.24);
 }
