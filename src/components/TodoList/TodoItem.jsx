@@ -2,7 +2,7 @@ import { MdDeleteSweep } from "react-icons/md";
 
 const TodoItem = ({ id, text, completed = false, onChecked, onDelete }) => {
   return (
-    <li className="font-title max-h-max w-1/5 rounded-lg bg-lime-200 p-5 text-right shadow-xl">
+    <li className="font-title max-h-max w-full rounded-lg bg-lime-200 p-5 text-right shadow-xl sm:w-auto lg:w-1/5">
       {/* Content */}
       <div className="mb-5 flex items-start justify-start text-left">
         <label className="custom-checkbox mt-1 grid cursor-pointer place-content-center rounded-xl bg-blue-600">

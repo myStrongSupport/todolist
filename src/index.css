@@ -8,11 +8,13 @@
   box-sizing: border-box;
 }
 
-.reversed-text {
-  writing-mode: vertical-rl;
-  -webkit-text-orientation: mixed;
-  text-orientation: mixed;
-  transform: rotate(180deg);
+@layer utilities {
+  .reversed-text {
+    writing-mode: vertical-rl;
+    -webkit-text-orientation: mixed;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+  }
 }
 
 .custom-checkbox .checkmark {

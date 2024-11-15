@@ -122,7 +122,7 @@ function App() {
   return (
     <>
       <section className="h-screen">
-        <div className="mx-auto flex h-full max-w-[1400px] px-10">
+        <div className="mx-auto flex h-full max-w-[1400px] flex-col px-10 sm:flex-row">
           <Header />
 
           <div className="flex-1 py-10">
@@ -133,15 +133,15 @@ function App() {
 
             {/* Form Add Task */}
             <form onSubmit={handleAddTask} className="my-7">
-              <div className="bg-red- flex w-full border-b-2 border-blue-600 md:w-1/2">
+              <div className="flex w-full flex-col sm:flex-row sm:border-b-2 sm:border-blue-600 md:w-1/2">
                 <input
                   type="text"
-                  className="w-[80%] px-3 py-4 outline-none"
+                  className="mb-5 w-full border-b-2 bg-transparent px-3 py-4 outline-none sm:mb-0 sm:w-[80%] sm:border-none"
                   placeholder="Write your plan here"
                   onChange={changeEnteredTaskHandler}
                   value={tasksState.enteredTask}
                 />
-                <button className="flex w-[20%] items-center text-blue-600">
+                <button className="mx-auto flex w-full items-center justify-center rounded-lg border border-blue-600 p-1 text-blue-600 outline-none sm:w-[200px] sm:border-none sm:p-0">
                   <IoAddOutline size={25} />
                   <span className="ml-3"> Add Task</span>
                 </button>

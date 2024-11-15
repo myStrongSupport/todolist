@@ -3,7 +3,7 @@ import TabButton from "./Button/TabButton";
 
 const SearchBox = ({ onSearchTasks, onSelectFilter }) => {
   return (
-    <div className="flex w-full">
+    <div className="flex w-full flex-col md:flex-row">
       <div className="mr-6 flex w-full items-center rounded-3xl border-2 bg-gray-50">
         <IoSearchCircleSharp size={40} />
         <input
@@ -13,7 +13,7 @@ const SearchBox = ({ onSearchTasks, onSelectFilter }) => {
           onChange={onSearchTasks}
         />
       </div>
-      <menu className="flex">
+      <menu className="mt-4 flex md:mt-0">
         <TabButton onSelect={() => onSelectFilter("all")}>All</TabButton>
         <TabButton onSelect={() => onSelectFilter("completed")}>
           Completed
