@@ -6,62 +6,49 @@ import { IoAddOutline } from "react-icons/io5";
 
 // const STORAGE_TASKS = JSON.parse(localStorage.getItem("tasks")) || [];
 
+const getFromLocalStorage = () =>
+  JSON.parse(localStorage.getItem("tasks")) || [];
+
+const saveToLocalStorage = (tasks) => {
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+};
+
 function App() {
   // States
-  const [enteredTask, setEnteredTasks] = useState("");
-  const [tasks, setTasks] = useState([]);
-  const [filterBtn, setFilterBtn] = useState("all");
-  const [search, setSearch] = useState("");
+  const [tasksState, setTasksState] = useState({
+    tasks: [],
+    enteredTask: "",
+    filteredBtn: "all",
+    search: "",
+  });
+
+  // const [enteredTask, setEnteredTasks] = useState("");
+  // const [tasks, setTasks] = useState([]);
+  // const [filterBtn, setFilterBtn] = useState("all");
+  // const [search, setSearch] = useState("");
   const [error, setError] = useState(null);
 
   // ChangeHandler
 
   const changeEnteredTaskHandler = (event) => {
-    setEnteredTasks(event.target.value);
+    setTasksState((prevState) => ({
+      ...prevState,
+      enteredTask: event.targe.value,
+    }));
   };
 
   // Functions
   const handleCheckedTask = (id) => {
-    setTasks((prevState) =>
-      prevState.map((task) =>
-        task.id === id ? { ...task, completed: !task.completed } : task,
-      ),
+    const updatedTasks = tasksState.tasks.map((task) =>
+      task.id === id ? { ...task, completed: !task.completed } : task,
     );
 
-    const storedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    setTasksState((prevState) => ({
+      ...prevState,
+      tasks: updatedTasks,
+    }));
 
-    localStorage.setItem(
-      "tasks",
-      JSON.stringify(
-        storedTasks.map((task) =>
-          task.id === id ? { ...task, completed: !task.completed } : task,
-        ),
-      ),
-    );
-  };
-
-  const onSubmitToAddTask = (event) => {
-    event.preventDefault();
-
-    if (enteredTask.trim() === "") {
-      return;
-    }
-    if (error) {
-      setError(null);
-    }
-    const newTask = {
-      id: (Math.random() * 1000).toFixed(2).toString(),
-      text: enteredTask,
-      completed: false,
-    };
-
-    setTasks((prevState) => [...prevState, newTask]);
-
-    const storedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
-
-    localStorage.setItem("tasks", JSON.stringify([newTask, ...storedTasks]));
-
-    setEnteredTasks("");
+    saveToLocalStorage(updatedTasks);
   };
 
   const handleDeleteTask = (id) => {
@@ -91,6 +78,32 @@ function App() {
 
     return task.text.trim().toLowerCase().includes(search.trim());
   });
+
+  const onSubmitToAddTask = (event) => {
+    event.preventDefault();
+
+    // Check for any Error
+    if (enteredTask.trim() === "") {
+      return;
+    }
+    if (error) {
+      setError(null);
+    }
+
+    // Add Task To List
+    const newTask = {
+      id: (Math.random() * 1000).toFixed(2).toString(),
+      text: enteredTask,
+      completed: false,
+    };
+    setTasks((prevState) => [...prevState, newTask]);
+
+    // Add task to local storage
+    const storedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    localStorage.setItem("tasks", JSON.stringify([newTask, ...storedTasks]));
+
+    setEnteredTasks("");
+  };
 
   // useEFfect
 
